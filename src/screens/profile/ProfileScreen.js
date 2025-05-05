@@ -1,8 +1,9 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet, Switch } from "react-native";
 import Icon from "@react-native-vector-icons/fontawesome";
-
-export default function ProfileScreen({ navigation }) {
+import { useSelector } from "react-redux";
+export default function ProfileScreen({ navigation, route }) {
+    const username = useSelector((state) => state.user.name);
     const [isNightMode, setIsNightMode] = React.useState(false);
 
     const toggleNightMode = () => {
@@ -17,7 +18,7 @@ export default function ProfileScreen({ navigation }) {
                     source={{ uri: "https://randomuser.me/api/portraits/women/33.jpg" }}
                     style={styles.profileImage}
                 />
-                <Text style={styles.profileName}>Limpitsouni</Text>
+                <Text style={styles.profileName}>{username}</Text>
                 <Text style={styles.profileId}>ID: 83247963</Text>
                 <TouchableOpacity style={styles.editButton}>
                     <Text style={styles.editButtonText}>Edit</Text>

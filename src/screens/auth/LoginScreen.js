@@ -15,8 +15,10 @@ import React, { useState } from 'react'
 import TwiterIcon from '../../images/twitter.webp'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useDispatch } from 'react-redux'
+import { setName, setToken } from '../../store/userSlice'
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation, route }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -24,38 +26,42 @@ export default function LoginScreen({ navigation }) {
     username: false,
     password: false,
   });
-
+  const dispatch = useDispatch();
   const handleLogin = async () => {
     if (!username || !password) {
       Alert.alert('Error', 'Please enter both username and password');
       return;
     }
     
-    // Here you would typically call your authentication API
-    console.log('Logging in with:', username, password);
+    console.log('Attempting login with:', username); // Keep password out of logs
+    
     try {
-      const response = await axios.post('https://mobile-fake-api.vercel.app/user',
-        {
-          id: 3,
-          username: username,
-          password: password
-        }
-      );
+      const response = await axios.get('https://mobile-fake-api.vercel.app/user');
       
-      console.log('Login successful:', response.data);
-      // Store user data or token if needed
-      if (!response.data) {
-        throw new Error('No data received from server');
+      if (!response.data || !Array.isArray(response.data)) {
+        throw new Error('Invalid data received from server');
       }
-    // ...existing code...
-    } catch (error) {
-      console.log('Login error:', error?.response?.data || error?.message || error);
-      Alert.alert('Error', 'Login failed.');
-    }
+      const users = response.data;
+      const foundUser = users.find(user => user.username === username && user.password === password);
 
-    await AsyncStorage.setItem('token', 'onJAX9E4f8mRW1t22H1gkShNITDBPe53QEHPEdPkAQ0W3Ti9XEFS4PCqpYpQ9qQX')
-    // Navigate to main app screen after successful login
-    navigation.replace('Main');
+      if (foundUser) {
+        Alert.alert('Success', 'Login successful!');
+        
+        const token = foundUser.token || 'onJAX9E4f8mRW1t22H1gkShNITDBPe53QEHPEdPkAQ0W3Ti9XEFS4PCqpYpQ9qQX'; 
+        // await AsyncStorage.setItem('token', token);
+        
+        // navigation.navigate('Main');
+        // dispatch(setName(username));
+        dispatch(setToken(token))
+
+      } else {
+        Alert.alert('Error', 'Invalid username or password');
+      }
+    } catch (error) {
+      // 5. Handle network errors or other issues
+      console.error('Login error:', error.response?.data || error.message || error);
+      Alert.alert('Error', 'Login failed. Please try again.');
+    }
   };
 
   const handleForgotPassword = () => {

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react'; // Import Math from react-native-reanimated
+import axios from 'axios';
 import {
 View,
 Text,
@@ -10,20 +10,35 @@ SafeAreaView,
 KeyboardAvoidingView,
 Platform,
 ScrollView,
+Alert,
 } from 'react-native';
 
-const SignupScreen = () => {
-const [name, setName] = useState('');
-const [email, setEmail] = useState('');
-const [password, setPassword] = useState('');
-const [confirmPassword, setConfirmPassword] = useState('');
-const navigation = useNavigation();
+const SignupScreen = ({ navigation }) => {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
-const handleSignup = () => {
-    // Implement signup logic here
-    console.log('Signup with:', { name, email, password });
-    // Navigate to the appropriate screen after signup
-};
+    const handleSignup = async () => {
+        // Implement signup logic here
+        console.log('Signup with:', { name, email, password });
+        try {
+            const response = await axios.post('https://mobile-fake-api.vercel.app/user',
+                {
+                id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+                email: email,
+                username: name,
+                password: password
+                }
+            );
+            console.log('Signup successful:', response.data);
+            Alert.alert('Success', 'Account created successfully!');
+            navigation.navigate('Login');
+        } catch (error) {
+            console.error('Signup error:', error.response?.data || error.message || error);
+            Alert.alert('Error', 'Signup failed. Please try again.');
+        }
+    };
 
 return (
     <SafeAreaView style={styles.container}>
@@ -39,12 +54,12 @@ return (
 
                 <View style={styles.form}>
                     <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Full Name</Text>
+                        <Text style={styles.label}>Username</Text>
                         <TextInput
                             style={styles.input}
                             value={name}
                             onChangeText={setName}
-                            placeholder="Enter your full name"
+                            placeholder="Enter your username"
                             autoCapitalize="words"
                         />
                     </View>

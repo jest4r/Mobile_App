@@ -18,17 +18,30 @@ const Item = ({item}) => {
     )
 }
 export default function HomeScreen() {
-    const [data, setData] = React.useState([]);
-    const fetchData = async () => {
+    const [Bookstore, setBookstore] = React.useState([]);
+    const fetchBookstore = async () => {
         try {
-            const response = await axios.get('https://mobile-fake-api.vercel.app/books');
-            setData(response.data);
+            const response = await axios.get('https://mobile-fake-api.vercel.app/bookstore');
+            setBookstore(response.data);
         } catch (error) {
             console.error(error);
         }
     }
     React.useEffect(() => {
-        fetchData();
+        fetchBookstore();
+    }, []);
+
+    const [Bookshelf, setBookshelf] = React.useState([]);
+    const fetchBookshelf = async () => {
+        try {
+            const response = await axios.get('https://mobile-fake-api.vercel.app/bookshelf');
+            setBookshelf(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    React.useEffect(() => {
+        fetchBookshelf();
     }, []);
 
     
@@ -39,7 +52,7 @@ export default function HomeScreen() {
                 <TextInput placeholder='Search' style={styles.searchInput}/>
                 <Icon style={styles.MicIcon} name='microphone' size={20} color='grey'/>
                 <View style={styles.header}>
-                    <Text style={styles.title}> Reading </Text>
+                    <Text style={styles.title}> Bookshelf </Text>
                     <View style={styles.viewAll}> 
                         <Text> View all</Text>
                         <Icon style={styles.chevronIcon} name='chevron-right' size={15} color='lightgrey'/>
@@ -47,14 +60,14 @@ export default function HomeScreen() {
                 </View>
                 <View>
                 <FlatList
-                    data={data}
+                    data={Bookshelf}
                     renderItem={({item}) => <Item item={item} />}
                     keyExtractor={item => item.id}
                     horizontal
                     style={styles.reading}
                 />
                 <View style={styles.header}>
-                    <Text style={styles.bookShelf}> Bookshelf </Text>
+                    <Text style={styles.bookShelf}> Bookstore </Text>
                     <View style={styles.viewAll}> 
                         <Text> View all</Text>
                         <Icon style={styles.chevronIcon} name='chevron-right' size={15} color='lightgrey'/>
@@ -62,7 +75,7 @@ export default function HomeScreen() {
                 </View>
                 <View>
                 <FlatList
-                    data={data}
+                    data={Bookstore}
                     renderItem={({item}) => <Item item={item} />}
                     keyExtractor={item => item.id}
                     numColumns={3}

@@ -4,19 +4,19 @@ export const userSlice = createSlice({
   name: "user",
   initialState: {
     name: "",
-    hobby: ["reading"],
+    token: ""
   },
   reducers: {
     setName: (state, action) => {
       state.name = action.payload;
     },
-    setHobby: (state, action) => {
-      state.hobby.push(action.payload);
-    },
+    setToken: (state, action) => {
+      state.token = action.payload;
+    }
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setName, setHobby } = userSlice.actions;
+export const { setName, setToken } = userSlice.actions;
 
 export default userSlice.reducer;

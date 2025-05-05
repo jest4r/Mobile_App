@@ -15,6 +15,7 @@ import CartScreen from "../screens/CartScreen";
 import SignupScreen from "../screens/auth/SignupScreen";
 import CategoryScreen from "../screens/CategoryScreen";
 import ProfileScreen from "../screens/profile/ProfileScreen";
+import { useSelector } from "react-redux";
 
 // Tạo các màn hình đơn giản
 // Login, Signup stck
@@ -72,7 +73,8 @@ function MainStackScreen() {
 
 // App Navigator
 export default function App() {
-  const [isLogin, setIsLogin] = React.useState(false);
+  // const [isLogin, setIsLogin] = React.useState(false);
+  const userToken = useSelector(state => state.user.token)
   useEffect(() => {
       const checkLogin = async () => {
           const token = await AsyncStorage.getItem('token');
@@ -88,8 +90,19 @@ export default function App() {
   return (
     <NavigationContainer>
       <AuthStack.Navigator>
-        <AuthStack.Screen name="Auth" component={AuthStackScreen} options={{headerShown: false}} />
-        <AuthStack.Screen name="Main" component={MainStackScreen} options={{headerShown: false}} />
+      {userToken ? (
+        <AuthStack.Screen
+          name="Main"
+          component={MainStackScreen}
+          options={{headerShown: false}}
+        />
+      ) : (
+        <AuthStack.Screen
+          name="Auth" 
+          component={AuthStackScreen}
+          options={{headerShown: false}}
+        />
+      )}
       </AuthStack.Navigator>
     </NavigationContainer>
   );

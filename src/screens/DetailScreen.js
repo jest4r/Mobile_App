@@ -1,57 +1,75 @@
 import {Text, View, TouchableOpacity, Image, StyleSheet, TextInput, FlatList, ScrollView} from 'react-native';
 import { useSelector, useDispatch } from "react-redux";
-import React from 'react';
+import React, {useState} from 'react';
 import Icon from '@react-native-vector-icons/fontawesome';
 import { addProduct } from '../store/productSlice';
-
+import axios from 'axios';
 const Item = ({item}) => {
     return (
         <View style={styles.item}>
             <Image source={{uri: item.image}} style={styles.avatar}/>
             <View style={styles.detail}>
                 <Text style={styles.author}>{item.author}</Text>
+                <View style={styles.rating}>
+                    {[...Array(5)].map((_, i) => (
+                        <Icon 
+                            key={i} 
+                            name="star" 
+                            size={15} 
+                            color={i < item.rating ? "gold" : "#DDDDDD"} 
+                        />
+                    ))}
+                    <Text style={styles.number}>
+                        {item.rating}
+                    </Text>
+                </View>
                 <Text style={styles.comment}>{item.comment}</Text>
             </View>
         </View>
     )
 }
 
-const DATA = [
-    {
-        id: '1',
-        comment: 'This book completely transformed how I approach my daily habits. The scientific insights are fascinating!',
-        author: 'Sarah Johnson',
-        image: 'https://randomuser.me/api/portraits/women/18.jpg'
-    },
-    {
-        id: '2',
-        comment: 'I appreciated the practical examples that show how to break bad habits. Very actionable advice.',
-        author: 'Michael Chen',
-        image: 'https://randomuser.me/api/portraits/men/22.jpg'
-    },
-    {
-        id: '3',
-        comment: 'The case studies about companies using habit formation for marketing were eye-opening.',
-        author: 'Emma Williams',
-        image: 'https://randomuser.me/api/portraits/women/33.jpg'
-    },
-    {
-        id: '4',
-        comment: 'Started applying the habit loop concept to my morning routine with great results!',
-        author: 'David Rodriguez',
-        image: 'https://randomuser.me/api/portraits/men/45.jpg'
-    },
-    
-]
+  
 
 export default function DetailScreen({navigation, route}) {
     const {bookDetail} = route.params;
     const dispatch = useDispatch();
-    
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const toggleExpansion = () => {
+        setIsExpanded(!isExpanded); // Toggle the state
+    };
+
     const onAddBook = () => {
         dispatch(addProduct(bookDetail));
         navigation.navigate('Cart');
     }
+    
+    const toggleBook = () => {
+        const [showBookDetails, setShowBookDetails] = useState(false);
+
+        // Toggle book details visibility
+        setShowBookDetails(!showBookDetails);
+
+    }
+
+    const toggleAuthor = () => {
+        const [showAuthor, setShowAuthor] = useState(false);
+
+        setShowAuthor(!showAuthor);
+    }
+    const [data, setData] = useState([]);
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('https://mobile-fake-api.vercel.app/reviews');
+            setData(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    React.useEffect(() => {
+        fetchData();
+    }, []);
     return (
     <View>
         <ScrollView style={styles.container}>
@@ -68,12 +86,11 @@ export default function DetailScreen({navigation, route}) {
                         {bookDetail?.author}                   
                     </Text>
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button}>
-                            <Text>Self Development</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.button}>
-                            <Text>Psychological</Text>
-                        </TouchableOpacity>
+                        {bookDetail?.categories && bookDetail.categories.map((category, index) => (
+                            <TouchableOpacity key={index} style={styles.button}>
+                                <Text>{category}</Text>
+                            </TouchableOpacity>
+                        ))}
                     </View>
                     <View style={styles.rating}>
                         <Icon name="star" size={15} color="gold" />
@@ -97,16 +114,22 @@ export default function DetailScreen({navigation, route}) {
             <Text style={styles.intro}>
                 Introduction
             </Text>
-            <Text style={styles.specific}>
+            <Text style={styles.specific} numberOfLines={isExpanded ? undefined : 3}> 
                 {bookDetail?.description}
-                <Text style={styles.readmore}> Read more </Text>
-                <Icon style={styles.chevron} name={'chevron-down'} size={12}/>
             </Text>
+            {/* Toggle Text and Icon */}
+            <TouchableOpacity onPress={toggleExpansion} style={styles.readMoreContainer}>
+                <Text style={styles.readmore}>
+                    {isExpanded ? 'Read less' : 'Read more'} 
+                </Text>
+                <Icon style={styles.chevron} name={isExpanded ? 'chevron-up' : 'chevron-down'} size={12}/>
+            </TouchableOpacity>
+
             <View style={styles.catalog}>
                 <Text style={styles.catalogText}>
-                    Catalog: Next Chapter
+                    Book details and Edition
                 </Text>
-                <Icon style ={{marginRight: 10}} name={'list'} size={20} color='cyan'/>
+                <Icon onPress={toggleBook} style ={{marginRight: 10}} name={'list'} size={20} color='cyan'/>
             </View>            
             <View style={{
                 borderBottomWidth: 1,
@@ -116,9 +139,9 @@ export default function DetailScreen({navigation, route}) {
             }}/>
             <View style={styles.shelf}>
                 <Text style={styles.catalogText}>
-                    Add to bookshelf
+                    About the author
                 </Text>
-                <Icon style ={{marginRight: 10}} name={'plus-square-o'} size={20} color='cyan'/>
+                <Icon onPress={toggleAuthor} style ={{marginRight: 10}} name={'plus-square-o'} size={20} color='cyan'/>
             </View>
             <View style={{
                 borderBottomWidth: 1,
@@ -131,7 +154,7 @@ export default function DetailScreen({navigation, route}) {
                 <Text style={styles.writeComment}> write a comment </Text>
             </View>
                 <FlatList
-                    data={DATA}
+                    data={data}
                     renderItem={({item}) => <Item item={item} />}
                     keyExtractor={item => item.id}
                     numColumns={1}
@@ -139,10 +162,10 @@ export default function DetailScreen({navigation, route}) {
         </ScrollView>
         <View style={styles.buyContainer}>
             <TouchableOpacity style={styles.trial}> 
-                <Text> Free Trials </Text>
+                <Text> {bookDetail?.status === 1 ? 'Write Review' : 'Free Trials'} </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buy} onPress={onAddBook}>
-                <Text> Buy Now </Text>
+                <Text> {bookDetail?.status === 1 ? 'Read' : 'Buy Now'}</Text>
             </TouchableOpacity>
         </View>
     </View>
@@ -302,14 +325,20 @@ const styles = StyleSheet.create({
         lineHeight: 25,
         paddingRight: 10
     },
+    readMoreContainer: { // New style for the toggle area
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 5, // Add some space
+        alignSelf: 'flex-start', // Align to the left
+    },
     readmore: {
         fontSize: 15,
-        fontWeight: '500'
+        fontWeight: '500',
+        color: 'cyan', // Make it look like a link
+        marginRight: 5, // Space before icon
     },
     chevron: {
-        position: 'absolute',
-        right: 0,
-        bottom: 0,
-        marginLeft: 5,
+        // Removed absolute positioning
+        color: 'cyan', // Match link color
     }
   });
