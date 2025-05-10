@@ -2,6 +2,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import Icon from '@react-native-vector-icons/fontawesome';
+import { removeProduct } from '../store/productSlice';
 
 const Item = ({ item, onSelect, isSelected }) => {
   return (
@@ -26,6 +27,7 @@ const Item = ({ item, onSelect, isSelected }) => {
 
 
 export default function CartScreen({ navigation}) {
+  const dispatch = useDispatch();
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const DATA = useSelector(state => state.product.books);
@@ -81,8 +83,26 @@ export default function CartScreen({ navigation}) {
       />
       <View style={styles.footer}>
         <Text style={styles.subTotal}>Sub Total: ${calculateTotal()}</Text>
-        <TouchableOpacity style={styles.checkoutButton}>
+        <TouchableOpacity style={styles.checkoutButton} onPress={() => navigation.navigate('Payment', { totalAmount: calculateTotal() })}>
           <Text style={styles.checkoutText}>Checkout</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.deleteContainer}>
+        <TouchableOpacity 
+          style={styles.deleteButton}
+          disabled={selectedItems.length === 0}
+          onPress={() => {
+            if (selectedItems.length > 0) {
+              dispatch(removeProduct(selectedItems)); 
+              setSelectedItems([]);
+              if (selectAll) {
+                setSelectAll(false); 
+              }
+              alert('Selected items removed from cart');
+            }
+          }}
+        >
+          <Icon name='trash-o' size={24} color="white" />
         </TouchableOpacity>
       </View>
     </View>
@@ -164,5 +184,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
+  },
+  deleteContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    alignItems: 'center',
+  },
+  deleteButton: {
+    backgroundColor: 'red',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

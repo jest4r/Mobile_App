@@ -17,20 +17,7 @@ const Item = ({item}) => {
         </View>
     )
 }
-export default function HomeScreen() {
-    const navigation = useNavigation();
-    const [Bookstore, setBookstore] = React.useState([]);
-    const fetchBookstore = async () => {
-        try {
-            const response = await axios.get('https://mobile-fake-api.vercel.app/bookstore');
-            setBookstore(response.data);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-    React.useEffect(() => {
-        fetchBookstore();
-    }, []);
+export default function ViewAllStoreScreen() {
 
     const [Bookshelf, setBookshelf] = React.useState([]);
     const fetchBookshelf = async () => {
@@ -45,7 +32,6 @@ export default function HomeScreen() {
         fetchBookshelf();
     }, []);
 
-    
     return (
         <ScrollView style={styles.container}>
             <View>
@@ -54,35 +40,15 @@ export default function HomeScreen() {
                 <Icon style={styles.MicIcon} name='microphone' size={20} color='grey'/>
                 <View style={styles.header}>
                     <Text style={styles.title}> Bookshelf </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('Book Shelf')} style={styles.viewAll}> 
-                        <Text> View all</Text>
-                        <Icon style={styles.chevronIcon} name='chevron-right' size={15} color='lightgrey'/>
-                    </TouchableOpacity>
                 </View>
                 <View>
                 <FlatList
                     data={Bookshelf}
                     renderItem={({item}) => <Item item={item} />}
                     keyExtractor={item => item.id}
-                    horizontal
-                    style={styles.reading}
-                />
-                <View style={styles.header}>
-                    <Text style={styles.bookShelf}> Bookstore </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('Book Store')} style={styles.viewAll}> 
-                        <Text> View all</Text>
-                        <Icon style={styles.chevronIcon} name='chevron-right' size={15} color='lightgrey'/>
-                    </TouchableOpacity>
-                </View>
-                <View>
-                <FlatList
-                    data={Bookstore}
-                    renderItem={({item}) => <Item item={item} />}
-                    keyExtractor={item => item.id}
                     numColumns={3}
                     style={styles.reading}
                 />
-            </View>
             </View>
         </View>
     </ScrollView>

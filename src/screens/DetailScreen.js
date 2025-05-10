@@ -45,6 +45,17 @@ export default function DetailScreen({navigation, route}) {
         navigation.navigate('Cart');
     }
     
+    const onTrial = () => {
+        navigation.navigate('Trial', {bookDetail});
+    }
+    const onRead = () => {
+        navigation.navigate('Reading', {bookDetail});
+    }
+
+    const onReview = () => {
+        navigation.navigate('Review', {bookDetail});
+    }
+
     const toggleBook = () => {
         const [showBookDetails, setShowBookDetails] = useState(false);
 
@@ -161,12 +172,25 @@ export default function DetailScreen({navigation, route}) {
                 />
         </ScrollView>
         <View style={styles.buyContainer}>
-            <TouchableOpacity style={styles.trial}> 
-                <Text> {bookDetail?.status === 1 ? 'Write Review' : 'Free Trials'} </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buy} onPress={onAddBook}>
-                <Text> {bookDetail?.status === 1 ? 'Read' : 'Buy Now'}</Text>
-            </TouchableOpacity>
+        {bookDetail?.status === 1 ? (
+            <>
+                <TouchableOpacity style={styles.trial} onPress={onReview}> 
+                    <Text> Write Review </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buy} onPress={onRead}>
+                    <Text> Read</Text>
+                </TouchableOpacity>
+            </>
+        ) : (
+            <>
+                <TouchableOpacity style={styles.trial} onPress={onTrial}>
+                    <Text> Free Trials</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buy} onPress={onAddBook}>
+                    <Text> Buy Now  </Text>
+                </TouchableOpacity>
+            </>
+        )}
         </View>
     </View>
     );

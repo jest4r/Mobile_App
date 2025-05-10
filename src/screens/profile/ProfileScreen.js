@@ -1,15 +1,23 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet, Switch } from "react-native";
 import Icon from "@react-native-vector-icons/fontawesome";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { removeToken } from "../../store/userSlice";
 export default function ProfileScreen({ navigation, route }) {
     const username = useSelector((state) => state.user.name);
     const [isNightMode, setIsNightMode] = React.useState(false);
-
+    const dispatch = useDispatch();
     const toggleNightMode = () => {
         setIsNightMode(!isNightMode);
     };
 
+    const onLogOut = async () => {
+        try {
+            dispatch(removeToken());
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    }
     return (
         <ScrollView style={styles.container}>
             {/* Profile Header */}
@@ -94,7 +102,7 @@ export default function ProfileScreen({ navigation, route }) {
 
             {/* Logout */}
             <View style={styles.logoutContainer}>
-                <TouchableOpacity style={styles.logoutButton} onPress={() => navigation.navigate("Auth")}>
+                <TouchableOpacity style={styles.logoutButton} onPress={onLogOut}>
                     <Icon name="sign-out" size={20} color="#fff" />
                     <Text style={styles.logoutButtonText}>Logout</Text>
                 </TouchableOpacity>

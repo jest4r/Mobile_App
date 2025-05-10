@@ -15,7 +15,14 @@ import CartScreen from "../screens/CartScreen";
 import SignupScreen from "../screens/auth/SignupScreen";
 import CategoryScreen from "../screens/CategoryScreen";
 import ProfileScreen from "../screens/profile/ProfileScreen";
+import ViewAllStoreScreen from "../screens/ViewAllStoreScreen";
+import ViewAllShelfScreen from "../screens/ViewAllShelfScreen";
+import TrialScreen from "../screens/TrialScreen";
+import ReadingScreen from "../screens/ReadingScreen";
+import ReviewScreen from "../screens/ReviewScreen";
+import PaymentScreen from "../screens/PaymentScreen";
 import { useSelector } from "react-redux";
+
 
 // Tạo các màn hình đơn giản
 // Login, Signup stck
@@ -65,8 +72,14 @@ function MainStackScreen() {
   return (
     <MainStack.Navigator>
       <MainStack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
+      <MainStack.Screen name="Book Shelf" component={ViewAllShelfScreen} />
+      <MainStack.Screen name="Trial" component={TrialScreen} />
+      <MainStack.Screen name="Reading" component={ReadingScreen} />
+      <MainStack.Screen name="Review" component={ReviewScreen} />
+      <MainStack.Screen name="Book Store" component={ViewAllStoreScreen} />
       <MainStack.Screen name="Details" component={DetailScreen} />
       <MainStack.Screen name="Cart" component={CartScreen} />
+      <MainStack.Screen name="Payment" component={PaymentScreen} />
     </MainStack.Navigator>
   );
 }
@@ -75,18 +88,7 @@ function MainStackScreen() {
 export default function App() {
   // const [isLogin, setIsLogin] = React.useState(false);
   const userToken = useSelector(state => state.user.token)
-  useEffect(() => {
-      const checkLogin = async () => {
-          const token = await AsyncStorage.getItem('token');
-          if (token) {
-              setIsLogin(true);
-          } else {
-              setIsLogin(false);
-          }
-      };
-      checkLogin();
-  }, []);
-
+  
   return (
     <NavigationContainer>
       <AuthStack.Navigator>
