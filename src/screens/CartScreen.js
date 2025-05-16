@@ -11,7 +11,7 @@ const Item = ({ item, onSelect, isSelected }) => {
         <Icon
           name={isSelected ? 'check-circle' : 'circle-thin'}
           size={24}
-          color={isSelected ? 'cyan' : 'grey'}
+          color={isSelected ? '#4A90E2' : 'grey'}
           style={styles.checkbox}
         />
       </TouchableOpacity>
@@ -26,8 +26,9 @@ const Item = ({ item, onSelect, isSelected }) => {
 };
 
 
-export default function CartScreen({ navigation}) {
+export default function CartScreen({ navigation, route}) {
   const dispatch = useDispatch();
+  const {bookDetail} = route.params;
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const DATA = useSelector(state => state.product.books);
@@ -65,7 +66,7 @@ export default function CartScreen({ navigation}) {
           <Icon
             name={selectAll ? 'check-circle' : 'circle-thin'}
             size={24}
-            color={selectAll ? 'cyan' : 'grey'}
+            color={selectAll ? '#4A90E2' : 'grey'}
           />
         </TouchableOpacity>
         <Text style={styles.selectAllText}>Select All</Text>
@@ -83,7 +84,13 @@ export default function CartScreen({ navigation}) {
       />
       <View style={styles.footer}>
         <Text style={styles.subTotal}>Sub Total: ${calculateTotal()}</Text>
-        <TouchableOpacity style={styles.checkoutButton} onPress={() => navigation.navigate('Payment', { totalAmount: calculateTotal() })}>
+        <TouchableOpacity 
+          style={styles.checkoutButton} 
+          onPress={() => navigation.navigate('Payment', { 
+            totalAmount: calculateTotal(),
+            bookDetail: DATA.filter(item => selectedItems.includes(item.id))
+          })}
+        >
           <Text style={styles.checkoutText}>Checkout</Text>
         </TouchableOpacity>
       </View>
@@ -159,7 +166,7 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 16,
-    color: 'cyan',
+    color: '#4A90E2',
   },
   footer: {
     flexDirection: 'row',
@@ -175,7 +182,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   checkoutButton: {
-    backgroundColor: 'cyan',
+    backgroundColor: '#4A90E2',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,

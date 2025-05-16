@@ -81,7 +81,7 @@ const CategoryScreen = ({ navigation }) => {
     const renderCategoryItem = ({ item }) => (
         <TouchableOpacity 
             style={styles.categoryItem}
-            onPress={() => navigation.navigate('BookStore', { category: item })}
+            onPress={() => navigation.navigate('Book Store')}
         >
             <View style={styles.imageContainer}>
                 <Image 

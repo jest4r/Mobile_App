@@ -54,7 +54,7 @@ function HomeTabs() {
         }
         return <Icon name={iconName} size={size} color={color} />;
       },
-      tabBarActiveTintColor: "cyan",
+      tabBarActiveTintColor: "#4A90E2",
       tabBarInactiveTintColor: "gray",
     })}
   >

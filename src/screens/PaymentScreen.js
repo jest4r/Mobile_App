@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from '@react-native-vector-icons/fontawesome'; // Or any other icon set you prefer
-
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { removeProduct } from '../store/productSlice';
 export default function PaymentScreen({ route, navigation }) {
   // Assuming 'totalAmount' is passed from CartScreen or CheckoutScreen
   const { totalAmount } = route.params || { totalAmount: 0 }; // Default to 0 if not passed
-
+  const {bookDetail} = route.params;
+  const dispatch = useDispatch();
   // Get current date and time for display
   const currentDate = new Date();
   const dateString = `${currentDate.getDate()} ${currentDate.toLocaleString('default', { month: 'long' })} ${currentDate.getFullYear()}`;
@@ -16,8 +19,36 @@ export default function PaymentScreen({ route, navigation }) {
   const handleDone = () => {
     // Navigate to Home screen or clear cart and navigate back
     // For example, navigate to a 'Home' screen in your main stack
-    navigation.popToTop(); // Go to the first screen in the stack
-    navigation.navigate('Home'); // Or your specific home screen name
+    // Create API call to save the purchased book
+    console.log('Books purchased:', bookDetail);
+
+    // Iterate through the cart items and post each book to the bookshelf API
+    bookDetail.forEach(book => {
+      const bookData = {
+        id: book.id + 1, // Ensure unique ID
+        title: book.title,
+        author: book.author,
+        image: book.image,
+        categories: book.categories,
+        description: book.description,
+        price: book.price,
+        status: '1',
+        content: book.content,
+        purchaseDate: new Date().toISOString(),
+        transactionId: transactionId
+      };
+
+      axios.post('https://mobile-fake-api.vercel.app/bookshelf', bookData)
+        .then(response => {
+          console.log('Book added to bookshelf:', response.data);
+        })
+        .catch(error => {
+          console.error('Error adding book to bookshelf:', error);
+        });
+        dispatch(removeProduct(book.id));
+    });
+
+    navigation.navigate('Book Shelf'); 
   };
 
   const handleDetails = () => {
@@ -104,7 +135,7 @@ const styles = StyleSheet.create({
         width: 80,
         height: 80,
         borderRadius: 40,
-        backgroundColor: '#008B8B', // Darker cyan (Dark Cyan)
+        backgroundColor: '#4A90E2', 
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 15,
@@ -112,7 +143,7 @@ const styles = StyleSheet.create({
     successText: {
         fontSize: 22,
         fontWeight: 'bold',
-        color: '#008B8B', // Dark cyan
+        color: '#4A90E2', // Dark cyan
         marginBottom: 5,
     },
     transactionIdText: {
@@ -171,7 +202,7 @@ const styles = StyleSheet.create({
     subTotalAmount: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: '#008B8B', // Dark cyan
+        color: '#4A90E2', // Dark cyan
     },
     currencySymbol: {
         fontSize: 20, // Slightly smaller currency symbol
@@ -209,7 +240,7 @@ const styles = StyleSheet.create({
         color: '#6c757d',
     },
     doneButton: {
-        backgroundColor: '#008B8B', // Dark cyan
+        backgroundColor: '#4A90E2', // Dark cyan
         paddingVertical: 15,
         paddingHorizontal: 20,
         borderRadius: 25,

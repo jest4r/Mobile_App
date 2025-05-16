@@ -42,7 +42,7 @@ export default function DetailScreen({navigation, route}) {
 
     const onAddBook = () => {
         dispatch(addProduct(bookDetail));
-        navigation.navigate('Cart');
+        navigation.navigate('Cart', {bookDetail});
     }
     
     const onTrial = () => {
@@ -117,8 +117,8 @@ export default function DetailScreen({navigation, route}) {
                         </Text>
                     </View>
                     <View style={styles.fee}>
-                        <Icon style={styles.dollar} name={'dollar'} size={14} color='cyan' />
-                        <Text style={{color: 'cyan', fontWeight: 'bold', fontSize: 18}}> {bookDetail?.price} </Text>
+                        <Icon style={styles.dollar} name={'dollar'} size={14} color='#4A90E2' />
+                        <Text style={{color: '#4A90E2', fontWeight: 'bold', fontSize: 18}}> {bookDetail?.price} </Text>
                     </View>
                 </View>
             </View>
@@ -140,7 +140,7 @@ export default function DetailScreen({navigation, route}) {
                 <Text style={styles.catalogText}>
                     Book details and Edition
                 </Text>
-                <Icon onPress={toggleBook} style ={{marginRight: 10}} name={'list'} size={20} color='cyan'/>
+                <Icon onPress={toggleBook} style ={{marginRight: 10}} name={'list'} size={20} color='#4A90E2'/>
             </View>            
             <View style={{
                 borderBottomWidth: 1,
@@ -152,7 +152,7 @@ export default function DetailScreen({navigation, route}) {
                 <Text style={styles.catalogText}>
                     About the author
                 </Text>
-                <Icon onPress={toggleAuthor} style ={{marginRight: 10}} name={'plus-square-o'} size={20} color='cyan'/>
+                <Icon onPress={toggleAuthor} style ={{marginRight: 10}} name={'plus-square-o'} size={20} color='#4A90E2'/>
             </View>
             <View style={{
                 borderBottomWidth: 1,
@@ -215,12 +215,12 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 10,
         borderWidth: 1,
-        borderColor: 'cyan',
+        borderColor: '#4A90E2',
         alignItems: 'center',
         width: '150'
     },
     buy: {
-        backgroundColor: 'cyan',
+        backgroundColor: '#4A90E2',
         padding: 10,
         alignItems: 'center',
         borderRadius: 10,
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     writeComment: {
         fontSize: 15,
         fontWeight: '400',
-        color: 'cyan'
+        color: '#4A90E2'
     },
     catalog: {
         flexDirection: 'row',
@@ -358,11 +358,11 @@ const styles = StyleSheet.create({
     readmore: {
         fontSize: 15,
         fontWeight: '500',
-        color: 'cyan', // Make it look like a link
+        color: '#4A90E2', // Make it look like a link
         marginRight: 5, // Space before icon
     },
     chevron: {
         // Removed absolute positioning
-        color: 'cyan', // Match link color
+        color: '#4A90E2', // Match link color
     }
   });

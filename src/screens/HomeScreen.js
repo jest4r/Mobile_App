@@ -13,7 +13,7 @@ const Item = ({item}) => {
             </TouchableOpacity>
             <Text style={styles.bookTitle}>{item.title}</Text>
             <Text style={styles.author}>{item.author}</Text>
-            <Text style={styles.author}>{item.price}</Text>
+            <Text style={styles.price}>{item.price}</Text>
         </View>
     )
 }
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     title: {
-        fontSize: 25,
+        fontSize: 20,
         fontWeight: 'bold',
         marginTop: 20,
         marginBottom: 20,
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
         paddingLeft: 8,
     },
     item: {
-        marginRight: 20,
+        marginRight: 10,
         marginBottom: 20,
     },
     bookImage: {
@@ -159,6 +159,13 @@ const styles = StyleSheet.create({
         color: 'grey',
         fontSize: 12,
         marginTop: 5,
+    },
+    reading: {
+        marginBottom: 20,
+    },
+    price: {
+        fontSize: 12,
+        color: '#4A90E2',
     },
 
 })
